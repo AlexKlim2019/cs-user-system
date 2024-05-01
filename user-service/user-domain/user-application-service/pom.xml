@@ -11,4 +11,11 @@
 
     <artifactId>user-application-service</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.cs.user.system</groupId>
+            <artifactId>user-domain-core</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
