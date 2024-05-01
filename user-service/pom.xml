@@ -14,8 +14,16 @@
         <module>user-application</module>
         <module>user-container</module>
         <module>user-dataaccess</module>
+        <module>common</module>
     </modules>
 
     <artifactId>user-service</artifactId>
     <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
 </project>
