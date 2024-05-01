@@ -31,6 +31,10 @@ public class User extends BaseEntity {
         return new Builder();
     }
 
+    public void initializeUser() {
+        setId(UUID.randomUUID());
+    }
+
     public void validateUser(int minimumRegistrationAge) {
         validateFirstName();
         validateLastName();

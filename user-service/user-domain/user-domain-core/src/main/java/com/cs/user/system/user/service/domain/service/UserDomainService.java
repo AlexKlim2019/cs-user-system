@@ -2,10 +2,10 @@ package com.cs.user.system.user.service.domain.service;
 
 import com.cs.user.system.user.service.domain.entity.User;
 import com.cs.user.system.user.service.domain.event.CreateUserEvent;
-import com.cs.user.system.user.service.domain.event.UpdateUserEvent;
+import com.cs.user.system.user.service.domain.event.ValidateUserEvent;
 
 public interface UserDomainService {
-    public CreateUserEvent validateAndInitiateUser(User user);
+    CreateUserEvent validateAndInitiateUser(User user);
 
-    public UpdateUserEvent validateAndUpdateUser(User user);
+    ValidateUserEvent validateUser(User user);
 }
