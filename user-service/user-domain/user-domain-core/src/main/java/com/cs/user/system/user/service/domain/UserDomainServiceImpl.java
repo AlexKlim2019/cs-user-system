@@ -1,8 +1,9 @@
-package com.cs.user.system.user.service.domain.service;
+package com.cs.user.system.user.service.domain;
 
 import com.cs.user.system.user.service.domain.entity.User;
-import com.cs.user.system.user.service.domain.event.UserCreateEvent;
-import com.cs.user.system.user.service.domain.event.UserUpdateEvent;
+import com.cs.user.system.user.service.domain.event.CreateUserEvent;
+import com.cs.user.system.user.service.domain.event.UpdateUserEvent;
+import com.cs.user.system.user.service.domain.service.UserDomainService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.ZoneId;
@@ -20,16 +21,16 @@ public class UserDomainServiceImpl implements UserDomainService {
     }
 
     @Override
-    public UserCreateEvent validateAndInitiateUser(User user) {
+    public CreateUserEvent validateAndInitiateUser(User user) {
         user.validateUser(minimumRegistrationAge);
         log.info("User with id: {} is initiated", user.getId());
-        return new UserCreateEvent(user, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new CreateUserEvent(user, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
-    public UserUpdateEvent validateAndUpdateUser(User user) {
+    public UpdateUserEvent validateAndUpdateUser(User user) {
         user.validateUser(minimumRegistrationAge);
         log.info("User with id: {} is updated", user.getId());
-        return new UserUpdateEvent(user, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new UpdateUserEvent(user, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 }

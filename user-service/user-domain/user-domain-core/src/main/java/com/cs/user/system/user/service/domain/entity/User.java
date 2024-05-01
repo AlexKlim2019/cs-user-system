@@ -14,6 +14,7 @@ public class User extends BaseEntity {
 
     private final String firstName;
     private final String lastName;
+    private final String email;
     private final LocalDate birthDate;
     private String address;
     private String phoneNumber;
@@ -22,6 +23,7 @@ public class User extends BaseEntity {
         super.setId(builder.id);
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
+        this.email = builder.email;
         this.birthDate = builder.birthDate;
     }
 
@@ -59,6 +61,7 @@ public class User extends BaseEntity {
         private UUID id;
         private String firstName;
         private String lastName;
+        private String email;
         private LocalDate birthDate;
         private String address;
         private String phoneNumber;
@@ -78,6 +81,11 @@ public class User extends BaseEntity {
 
         public Builder lastName(String lastName) {
             this.lastName = lastName;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 

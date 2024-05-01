@@ -9,6 +9,7 @@ public class UserGenerator {
     private static final String DEFAULT_USER_ID = "50d56be1-d6a6-4cf7-8dfc-710253292451";
     private static final String DEFAULT_FIRST_NAME = "Test first name";
     private static final String DEFAULT_LAST_NAME = "Test last name";
+    private static final String DEFAULT_EMAIL = "test@mail.com";
     private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(2000, Month.APRIL, 25);
 
     public static User generateUser(String firstName, String lastName) {
@@ -16,6 +17,7 @@ public class UserGenerator {
                 .id(UUID.fromString(DEFAULT_USER_ID))
                 .firstName(firstName)
                 .lastName(lastName)
+                .email(DEFAULT_EMAIL)
                 .birthDate(DEFAULT_BIRTH_DATE)
                 .build();
     }
@@ -25,6 +27,7 @@ public class UserGenerator {
                 .id(UUID.fromString(DEFAULT_USER_ID))
                 .firstName(DEFAULT_FIRST_NAME)
                 .lastName(DEFAULT_LAST_NAME)
+                .email(DEFAULT_EMAIL)
                 .birthDate(birthDate)
                 .build();
     }

@@ -4,8 +4,8 @@ import com.cs.user.system.user.service.domain.entity.User;
 
 import java.time.ZonedDateTime;
 
-public class UserCreateEvent extends UserEvent{
-    public UserCreateEvent(User user, ZonedDateTime createdAt) {
+public class CreateUserEvent extends UserEvent{
+    public CreateUserEvent(User user, ZonedDateTime createdAt) {
         super(user, createdAt);
     }
 }
