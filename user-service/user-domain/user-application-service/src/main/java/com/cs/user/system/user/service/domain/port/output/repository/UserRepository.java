@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface UserRepository {
 
-    User save(User user, ZonedDateTime createdAt);
+    Optional<User> save(User user, ZonedDateTime createdAt);
 
     void update(User user, ZonedDateTime updatedAt);
 

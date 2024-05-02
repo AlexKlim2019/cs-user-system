@@ -24,16 +24,8 @@ public class CreateUserCommandHandler {
     public CreateUserResponse save(CreateUserCommand command) {
         User user = userDataMapper.createUserCommandToUser(command);
         CreateUserEvent event = userDomainService.validateAndInitiateUser(user);
-        save(event);
-        return new CreateUserResponse(event.getUser().getId(), "User has been created successfully");
-    }
-
-    private void save(CreateUserEvent event) {
-        var result = userRepository.save(event.getUser(), event.getCreatedAt());
-        if (result == null) {
-            log.error("Could not save user!");
-            throw new UserDomainException("Could not save user!");
-        }
-        log.info("User is saved with id: {}", result.getId());
+        userRepository.save(event.getUser(), event.getCreatedAt())
+                .orElseThrow(() -> new UserDomainException("Could not save user!"));
+        return new CreateUserResponse(event.getUser().getId(), "User with has been created successfully");
     }
 }

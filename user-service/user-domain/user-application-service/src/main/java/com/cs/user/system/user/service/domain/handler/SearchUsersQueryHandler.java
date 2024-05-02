@@ -21,12 +21,9 @@ public class SearchUsersQueryHandler {
     private final UserDataMapper userDataMapper;
 
     public SearchUsersResponse handle(SearchUsersQuery query) {
-        var result = userRepository.findAllByBirthDateRange(query.from(), query.to());
-        if (result.isEmpty()) {
-            log.error("Users with birth date from {} to {} not found", query.from(), query.to());
-            throw new UserNotFoundException("Users with the birth date range not found");
-        }
-        List<UserShortView> usersView = result.get().stream()
+        var users = userRepository.findAllByBirthDateRange(query.from(), query.to())
+                .orElseThrow(()-> new UserNotFoundException("Users with the birth date range not found"));
+        List<UserShortView> usersView = users.stream()
                 .map(userDataMapper::userToUserShortView)
                 .toList();
         return new SearchUsersResponse(usersView);

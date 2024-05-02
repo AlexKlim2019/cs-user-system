@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -24,11 +22,8 @@ public class UpdateUserCommandHandler {
     private final UserDomainService userDomainService;
 
     public UpdateUserResponse handle(UpdateUserCommand command) {
-        Optional<User> result = userRepository.findById(command.id());
-        if (result.isEmpty()) {
-            log.error("User with id {} not found!", command.id());
-            throw new UserNotFoundException("User with id {} not found!");
-        }
+        userRepository.findById(command.id())
+                .orElseThrow(()-> new UserNotFoundException("User not found with given id!"));
         User user = userDataMapper.updateUserCommandToUser(command.id(), command);
         ValidateUserEvent event = userDomainService.validateUser(user);
         userRepository.update(user, event.getCreatedAt());

@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,12 +20,9 @@ public class PatchUserCommandHandler {
     private final UserDomainService userDomainService;
 
     public PatchUserResponse handle(PatchUserCommand command) {
-        Optional<User> result = userRepository.findById(command.id());
-        if (result.isEmpty()) {
-            log.error("User with id {} not found!", command.id());
-            throw new UserNotFoundException("User with id {} not found!");
-        }
-        var updatedUser = partialUpdateUser(result.get(), command);
+        var user = userRepository.findById(command.id())
+                .orElseThrow(() -> new UserNotFoundException("User not found with given id!"));
+        var updatedUser = partialUpdateUser(user, command);
         ValidateUserEvent event = userDomainService.validateUser(updatedUser);
         userRepository.update(updatedUser, event.getCreatedAt());
         return new PatchUserResponse(event.getUser().getId(), "User has been updated partially and successfully");
