@@ -2,11 +2,10 @@ package com.cs.user.system.user.service.domain.port.input.service;
 
 import com.cs.user.system.user.service.domain.dto.command.CreateUserCommand;
 import com.cs.user.system.user.service.domain.dto.command.DeleteUserCommand;
+import com.cs.user.system.user.service.domain.dto.command.PatchUserCommand;
 import com.cs.user.system.user.service.domain.dto.command.UpdateUserCommand;
 import com.cs.user.system.user.service.domain.dto.query.SearchUsersQuery;
-import com.cs.user.system.user.service.domain.dto.response.CreateUserResponse;
-import com.cs.user.system.user.service.domain.dto.response.SearchUsersResponse;
-import com.cs.user.system.user.service.domain.dto.response.UpdateUserResponse;
+import com.cs.user.system.user.service.domain.dto.response.*;
 
 public interface UserApplicationService {
 
@@ -16,5 +15,7 @@ public interface UserApplicationService {
 
     UpdateUserResponse updateUser(UpdateUserCommand command);
 
-    void deleteUser(DeleteUserCommand command);
+    PatchUserResponse partialUpdateUser(PatchUserCommand command);
+
+    DeleteUserResponse deleteUser(DeleteUserCommand command);
 }

@@ -17,5 +17,5 @@ public interface UserRepository {
 
     Optional<List<User>> findAllByBirthDateRange(ZonedDateTime from, ZonedDateTime to);
 
-    void deleteById(UUID userId);
+    void deleteById(UUID id);
 }

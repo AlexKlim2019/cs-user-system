@@ -12,10 +12,10 @@ import static com.cs.user.system.utils.StringUtils.concatenate;
 
 public class User extends BaseEntity {
 
-    private final String firstName;
-    private final String lastName;
-    private final String email;
-    private final LocalDate birthDate;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private LocalDate birthDate;
     private String address;
     private String phoneNumber;
 
@@ -83,6 +83,30 @@ public class User extends BaseEntity {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public static final class Builder {

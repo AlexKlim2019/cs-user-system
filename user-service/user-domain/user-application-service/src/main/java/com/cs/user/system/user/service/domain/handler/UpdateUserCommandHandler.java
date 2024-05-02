@@ -30,8 +30,8 @@ public class UpdateUserCommandHandler {
             throw new UserNotFoundException("User with id {} not found!");
         }
         User user = userDataMapper.updateUserCommandToUser(command.id(), command);
-        ValidateUserEvent validateUserEvent = userDomainService.validateUser(user);
-        userRepository.update(user, validateUserEvent.getCreatedAt());
-        return new UpdateUserResponse(validateUserEvent.getUser().getId(), "User is validated successfully");
+        ValidateUserEvent event = userDomainService.validateUser(user);
+        userRepository.update(user, event.getCreatedAt());
+        return new UpdateUserResponse(event.getUser().getId(), "User has been updated successfully");
     }
 }
