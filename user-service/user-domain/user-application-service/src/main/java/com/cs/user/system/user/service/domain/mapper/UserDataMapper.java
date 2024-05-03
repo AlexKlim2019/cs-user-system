@@ -2,7 +2,6 @@ package com.cs.user.system.user.service.domain.mapper;
 
 import com.cs.user.system.user.service.domain.dto.command.CreateUserCommand;
 import com.cs.user.system.user.service.domain.dto.command.UpdateUserCommand;
-import com.cs.user.system.user.service.domain.dto.response.UserShortView;
 import com.cs.user.system.user.service.domain.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -31,14 +30,6 @@ public class UserDataMapper {
                 .birthDate(command.birthDate())
                 .address(command.address())
                 .phoneNumber(command.phoneNumber())
-                .build();
-    }
-
-    public UserShortView userToUserShortView(User user) {
-        return UserShortView.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
                 .build();
     }
 }

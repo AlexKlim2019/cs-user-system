@@ -27,6 +27,6 @@ public class UpdateUserCommandHandler {
         User user = userDataMapper.updateUserCommandToUser(command.id(), command);
         ValidateUserEvent event = userDomainService.validateUser(user);
         userRepository.update(user, event.getCreatedAt());
-        return new UpdateUserResponse(event.getUser().getId(), "User has been updated successfully");
+        return new UpdateUserResponse(event.getUser(), "User has been updated successfully");
     }
 }

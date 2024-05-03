@@ -1,7 +1,6 @@
 package com.cs.user.system.user.service.domain.dto.response;
 
+import com.cs.user.system.user.service.domain.entity.User;
 import lombok.NonNull;
 
-import java.util.UUID;
-
-public record PatchUserResponse(@NonNull UUID id, String message) {}
+public record PatchUserResponse(@NonNull User user, String message) {}

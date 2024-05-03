@@ -26,6 +26,6 @@ public class CreateUserCommandHandler {
         CreateUserEvent event = userDomainService.validateAndInitiateUser(user);
         userRepository.save(event.getUser(), event.getCreatedAt())
                 .orElseThrow(() -> new UserDomainException("Could not save user!"));
-        return new CreateUserResponse(event.getUser().getId(), "User with has been created successfully");
+        return new CreateUserResponse(event.getUser(), "User with has been created successfully");
     }
 }

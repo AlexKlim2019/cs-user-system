@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserCommand command) {
         log.info("User with email {} is being created...", command.email());
         var response = userApplicationService.saveUser(command);
-        log.info("User with id {} has been created", response.id());
+        log.info("User with id {} has been created", response.user().getId());
         return ResponseEntity.ok(response);
     }
 
@@ -39,7 +39,7 @@ public class UserController {
     public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody UpdateUserCommand command) {
         log.info("User with id {} is being updated...", command.id());
         var response = userApplicationService.updateUser(command);
-        log.info("User with id {} has been updated", response.id());
+        log.info("User with id {} has been updated", response.user().getId());
         return ResponseEntity.ok(response);
     }
 
@@ -47,7 +47,7 @@ public class UserController {
     public ResponseEntity<PatchUserResponse> partialUpdateUser(@RequestBody PatchUserCommand command) {
         log.info("User with id {} is being patched...", command.id());
         var response = userApplicationService.partialUpdateUser(command);
-        log.info("User with id {} has been updated partially", response.id());
+        log.info("User with id {} has been updated partially", response.user().getId());
         return ResponseEntity.ok(response);
     }
 
