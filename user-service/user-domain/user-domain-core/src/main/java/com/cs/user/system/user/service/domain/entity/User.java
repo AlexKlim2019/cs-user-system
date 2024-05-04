@@ -25,6 +25,8 @@ public class User extends BaseEntity {
         this.lastName = builder.lastName;
         this.email = builder.email;
         this.birthDate = builder.birthDate;
+        this.address = builder.address;
+        this.phoneNumber = builder.phoneNumber;
     }
 
     public static Builder builder() {

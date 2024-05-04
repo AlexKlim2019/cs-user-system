@@ -25,7 +25,7 @@ public class PatchUserCommandHandler {
         var updatedUser = partialUpdateUser(user, command);
         ValidateUserEvent event = userDomainService.validateUser(updatedUser);
         userRepository.update(updatedUser, event.getCreatedAt());
-        return new PatchUserResponse(event.getUser().getId(), "User has been updated partially and successfully");
+        return new PatchUserResponse(event.getUser(), "User has been updated partially and successfully");
     }
 
     private User partialUpdateUser(User user, PatchUserCommand command) {
