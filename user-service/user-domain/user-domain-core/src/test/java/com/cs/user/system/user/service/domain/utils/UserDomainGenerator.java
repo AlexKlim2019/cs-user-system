@@ -1,16 +1,18 @@
-package com.cs.user.system.user.service.domain;
+package com.cs.user.system.user.service.domain.utils;
 
 import com.cs.user.system.user.service.domain.entity.User;
 
 import java.time.LocalDate;
 import java.time.Month;
 
-public class UserGenerator {
+public class UserDomainGenerator {
 
     private static final String DEFAULT_FIRST_NAME = "Test first name";
     private static final String DEFAULT_LAST_NAME = "Test last name";
     private static final String DEFAULT_EMAIL = "test@mail.com";
     private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(2000, Month.APRIL, 25);
+    private static final String DEFAULT_ADDRESS = "Test address";
+    private static final String DEFAULT_PHONE_NUMBER = "Test address";
 
     public static User generateDefaultUser() {
         return User.builder()
@@ -18,6 +20,8 @@ public class UserGenerator {
                 .lastName(DEFAULT_LAST_NAME)
                 .email(DEFAULT_EMAIL)
                 .birthDate(DEFAULT_BIRTH_DATE)
+                .address(DEFAULT_ADDRESS)
+                .phoneNumber(DEFAULT_PHONE_NUMBER)
                 .build();
     }
 

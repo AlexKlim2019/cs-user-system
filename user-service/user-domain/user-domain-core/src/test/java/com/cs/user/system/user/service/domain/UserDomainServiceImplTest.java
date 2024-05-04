@@ -10,8 +10,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.time.LocalDate;
 import java.time.Month;
 
-import static com.cs.user.system.user.service.domain.UserGenerator.generateDefaultUser;
-import static com.cs.user.system.user.service.domain.UserGenerator.generateUser;
+import static com.cs.user.system.user.service.domain.utils.UserDomainGenerator.generateDefaultUser;
+import static com.cs.user.system.user.service.domain.utils.UserDomainGenerator.generateUser;
 import static com.cs.user.system.utils.StringUtils.concatenate;
 import static org.assertj.core.api.Assertions.*;
 
