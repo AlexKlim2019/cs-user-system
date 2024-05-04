@@ -1,18 +1,20 @@
 package com.cs.user.system.user.service.application.exception.handler;
 
+import com.cs.user.system.user.service.application.exception.handler.response.ErrorResponse;
+import com.cs.user.system.user.service.application.exception.handler.response.ValidationErrorResponse;
+import com.cs.user.system.user.service.application.exception.handler.response.Violation;
 import com.cs.user.system.user.service.domain.exception.UserDomainException;
 import com.cs.user.system.user.service.domain.exception.UserNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
@@ -21,62 +23,59 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorDto handleInternalServerError(Exception exception) {
+    public ErrorResponse handleInternalServerError(Exception exception) {
         log.error(exception.getMessage(), exception);
-        return ErrorDto.builder()
+        return ErrorResponse.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .message("Unexpected error!")
                 .build();
     }
 
     @ResponseBody
-    @ExceptionHandler(value = {ValidationException.class})
+    @ExceptionHandler(value = {ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDto handleValidationException(ValidationException exception) {
-        ErrorDto errorDto;
-        if (exception instanceof ConstraintViolationException) {
-            String violations = extractViolationsFromException((ConstraintViolationException) exception);
-            log.error(violations, exception);
-            errorDto = ErrorDto.builder()
-                    .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                    .message(violations)
-                    .build();
-        } else {
-            log.error(exception.getMessage());
-            errorDto = ErrorDto.builder()
-                    .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                    .message(exception.getMessage())
-                    .build();
+    public ValidationErrorResponse handleConstraintViolationException(ConstraintViolationException exception) {
+        var response = ValidationErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .build();
+        for (ConstraintViolation constraintViolation : exception.getConstraintViolations()) {
+            var violation = new Violation(constraintViolation.getPropertyPath().toString(), constraintViolation.getMessage());
+            response.getViolations().add(violation);
         }
-        return errorDto;
+        return response;
     }
 
     @ResponseBody
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        var response = ValidationErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .build();
+        for (FieldError error : exception.getBindingResult().getFieldErrors()) {
+            var violation = new Violation(error.getField(), error.getDefaultMessage());
+            response.getViolations().add(violation);
+        }
+        return response;
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = {UserNotFoundException.class})
-    public ErrorDto handleUserNotFoundException(UserNotFoundException exception) {
+    public ErrorResponse handleUserNotFoundException(UserNotFoundException exception) {
         log.error(exception.getMessage(), exception);
-        return ErrorDto.builder()
+        return ErrorResponse.builder()
                 .code(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .message(exception.getMessage())
                 .build();
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {UserDomainException.class})
-    public ErrorDto handleUserDomainException(UserDomainException exception) {
+    public ErrorResponse handleUserDomainException(UserDomainException exception) {
         log.error(exception.getMessage(), exception);
-        return ErrorDto.builder()
+        return ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(exception.getMessage())
                 .build();
-    }
-
-    private String extractViolationsFromException(ConstraintViolationException exception) {
-        return exception.getConstraintViolations()
-                .stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining("--"));
     }
 }

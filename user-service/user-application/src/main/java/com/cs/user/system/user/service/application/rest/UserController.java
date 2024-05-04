@@ -7,6 +7,7 @@ import com.cs.user.system.user.service.domain.dto.command.UpdateUserCommand;
 import com.cs.user.system.user.service.domain.dto.query.SearchUsersQuery;
 import com.cs.user.system.user.service.domain.dto.response.*;
 import com.cs.user.system.user.service.domain.port.input.service.UserApplicationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserController {
     private final UserApplicationService userApplicationService;
 
     @PostMapping
-    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserCommand command) {
+    public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserCommand command) {
         log.info("User with email {} is being created...", command.email());
         var response = userApplicationService.saveUser(command);
         log.info("User with id {} has been created", response.user().getId());
