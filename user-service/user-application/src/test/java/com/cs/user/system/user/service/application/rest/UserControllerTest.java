@@ -11,12 +11,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.cs.user.system.user.service.application.utils.UserGenerator.BodyMapGenerator.createBodyMapWithDefaultValues;
-import static com.cs.user.system.user.service.application.utils.UserGenerator.BodyMapGenerator.createBodyMapWithoutFirstName;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.BodyMapGenerator.*;
 import static com.cs.user.system.user.service.application.utils.UserGenerator.generateDefaultCreateUserCommand;
 import static com.cs.user.system.user.service.application.utils.UserGenerator.generateDefaultCreateUserResponse;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -26,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 @ContextConfiguration(classes = {UserController.class, GlobalExceptionHandler.class})
 class UserControllerTest {
+
+    private final static String BAD_REQUEST = "Bad Request";
 
     @Autowired
     private MockMvc mvc;
@@ -41,7 +41,7 @@ class UserControllerTest {
         void successfulScenario() throws Exception {
             var command = generateDefaultCreateUserCommand();
             var response = generateDefaultCreateUserResponse();
-            var bodyMap = createBodyMapWithDefaultValues();
+            var bodyMap = createDefaultBodyMap();
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
             given(service.saveUser(command)).willReturn(response);
 
@@ -61,9 +61,8 @@ class UserControllerTest {
         }
 
         @Test
-        void givenRequestPayloadWithoutFirstName_thenReturnBadRequestError() throws Exception {
-            var emptyFirstName = " ";
-            var bodyMap = createBodyMapWithoutFirstName(emptyFirstName);
+        void givenRequestPayloadWithoutFirstName_thenReturnBadRequestResponse() throws Exception {
+            var bodyMap = createBodyMapWithoutFirstName();
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
 
             mvc.perform(post("/users")
@@ -71,9 +70,40 @@ class UserControllerTest {
                             .content(jsonBody))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST))
                     .andExpect(jsonPath("$.violations[0].fieldName").value("firstName"))
                     .andExpect(jsonPath("$.violations[0].message").value("First name is mandatory"));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutLastName_thenReturnBadRequestResponse() throws Exception {
+            var emptyLastName = " ";
+            var bodyMap = createBodyMapWithInvalidLastName(emptyLastName);
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST))
+                    .andExpect(jsonPath("$.violations[0].fieldName").value("lastName"))
+                    .andExpect(jsonPath("$.violations[0].message").value("Last name is mandatory"));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutEmail_thenReturnBadRequestResponse() throws Exception {
+            var bodyMap = createBodyMapWithInvalidEmail();
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST))
+                    .andExpect(jsonPath("$.violations[0].fieldName").value("email"))
+                    .andExpect(jsonPath("$.violations[0].message").value("Email is mandatory"));
         }
     }
 }

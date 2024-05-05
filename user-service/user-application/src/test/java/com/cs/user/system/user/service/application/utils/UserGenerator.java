@@ -10,13 +10,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public class UserGenerator {
-
     private static final String DEFAULT_FIRST_NAME = "Test first name";
     private static final String DEFAULT_LAST_NAME = "Test last name";
     private static final String DEFAULT_EMAIL = "test@mail.com";
     private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(2000, Month.APRIL, 25);
     private static final String DEFAULT_ADDRESS = "Test address";
-    private static final String DEFAULT_PHONE_NUMBER = "Test address";
+    private static final String DEFAULT_PHONE_NUMBER = "Test phone number";
     private static final String DEFAULT_RESPONSE_MESSAGE = "Test response message";
 
 
@@ -49,7 +48,7 @@ public class UserGenerator {
 
 
     public static class BodyMapGenerator {
-        public static Map<String, Object> createBodyMapWithDefaultValues() {
+        public static Map<String, Object> createDefaultBodyMap() {
             return Map.of(
                     "firstName", DEFAULT_FIRST_NAME,
                     "lastName", DEFAULT_LAST_NAME,
@@ -60,11 +59,31 @@ public class UserGenerator {
             );
         }
 
-        public static Map<String, Object> createBodyMapWithoutFirstName(String firstName) {
+        public static Map<String, Object> createBodyMapWithoutFirstName() {
             return Map.of(
-                    "firstName", firstName,
                     "lastName", DEFAULT_LAST_NAME,
                     "email", DEFAULT_EMAIL,
+                    "birthDate", DEFAULT_BIRTH_DATE,
+                    "address", DEFAULT_ADDRESS,
+                    "phoneNumber", DEFAULT_PHONE_NUMBER
+            );
+        }
+
+        public static Map<String, Object> createBodyMapWithInvalidLastName(String lastName) {
+            return Map.of(
+                    "firstName", DEFAULT_FIRST_NAME,
+                    "lastName", lastName,
+                    "email", DEFAULT_EMAIL,
+                    "birthDate", DEFAULT_BIRTH_DATE,
+                    "address", DEFAULT_ADDRESS,
+                    "phoneNumber", DEFAULT_PHONE_NUMBER
+            );
+        }
+
+        public static Map<String, Object> createBodyMapWithInvalidEmail() {
+            return Map.of(
+                    "firstName", DEFAULT_FIRST_NAME,
+                    "lastName", DEFAULT_LAST_NAME,
                     "birthDate", DEFAULT_BIRTH_DATE,
                     "address", DEFAULT_ADDRESS,
                     "phoneNumber", DEFAULT_PHONE_NUMBER

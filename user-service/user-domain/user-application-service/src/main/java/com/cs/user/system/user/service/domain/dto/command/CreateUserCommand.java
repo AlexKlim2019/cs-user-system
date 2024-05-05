@@ -7,13 +7,16 @@ import lombok.NonNull;
 
 import java.time.LocalDate;
 
+import static com.cs.user.system.constants.DomainConstants.EMAIL_REGEX;
+
 @Builder
 public record CreateUserCommand(
         @NotBlank(message = "First name is mandatory")
         String firstName,
         @NotBlank(message = "Last name is mandatory")
         String lastName,
-        @Email
+        @NotBlank(message = "Email is mandatory")
+        @Email(regexp = EMAIL_REGEX, message = "Email is not correct")
         String email,
         @NonNull
         LocalDate birthDate,
