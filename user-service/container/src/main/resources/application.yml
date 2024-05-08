@@ -1,0 +1,9 @@
+server:
+  port: 8081
+
+logging:
+  level:
+    com.cs.user.system: DEBUG
+
+user-service:
+  minimum-registration-age: 18
