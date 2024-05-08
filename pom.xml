@@ -44,7 +44,7 @@
             </dependency>
             <dependency>
                 <groupId>com.cs.user.system</groupId>
-                <artifactId>user-application</artifactId>
+                <artifactId>presentation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
