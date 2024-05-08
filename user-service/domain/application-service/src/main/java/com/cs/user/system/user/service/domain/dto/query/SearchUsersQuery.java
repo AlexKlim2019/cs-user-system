@@ -9,8 +9,8 @@ import java.time.ZonedDateTime;
 @Builder
 @DateTimeRangeConstraint
 public record SearchUsersQuery(
-        @NotNull(message = "From is mandatory")
+        @NotNull(message = "From is mandatory!")
         ZonedDateTime from,
-        @NotNull(message = "To is mandatory")
+        @NotNull(message = "To is mandatory!")
         ZonedDateTime to) {
 }

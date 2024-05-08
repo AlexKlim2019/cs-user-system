@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody UpdateUserCommand command) {
+    public ResponseEntity<UpdateUserResponse> updateUser(@Valid @RequestBody UpdateUserCommand command) {
         log.info("User with id {} is being updated...", command.id());
         var response = userApplicationService.updateUser(command);
         log.info("User with id {} has been updated", response.user().getId());

@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
 
     private String extractViolationsFromException(List<FieldError> fieldErrors) {
         return fieldErrors.stream()
-                .map(error -> String.format("The %s field has the error: %s!", error.getField(), error.getDefaultMessage()))
+                .map(error -> String.format("The %s field has the error: %s", error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.joining("--"));
     }
 }
