@@ -28,7 +28,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.cs.user.system</groupId>
-                <artifactId>user-domain-core</artifactId>
+                <artifactId>core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
