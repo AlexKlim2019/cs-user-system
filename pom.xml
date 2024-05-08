@@ -33,7 +33,7 @@
             </dependency>
             <dependency>
                 <groupId>com.cs.user.system</groupId>
-                <artifactId>user-application-service</artifactId>
+                <artifactId>application-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

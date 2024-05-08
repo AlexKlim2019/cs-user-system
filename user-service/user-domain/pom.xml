@@ -13,7 +13,7 @@
 
     <modules>
         <module>core</module>
-        <module>user-application-service</module>
+        <module>application-service</module>
     </modules>
 
     <artifactId>user-domain</artifactId>
