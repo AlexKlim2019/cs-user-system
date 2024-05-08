@@ -10,7 +10,7 @@
     </parent>
 
     <modules>
-        <module>user-domain</module>
+        <module>domain</module>
         <module>representation</module>
         <module>user-container</module>
         <module>user-dataaccess</module>

@@ -16,7 +16,7 @@
         <module>application-service</module>
     </modules>
 
-    <artifactId>user-domain</artifactId>
+    <artifactId>domain</artifactId>
 
     <dependencies>
         <dependency>
