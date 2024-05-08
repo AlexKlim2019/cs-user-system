@@ -11,11 +11,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.cs.user.system.user.service.application.utils.UserGenerator.BodyMapGenerator.*;
-import static com.cs.user.system.user.service.application.utils.UserGenerator.generateDefaultCreateUserCommand;
-import static com.cs.user.system.user.service.application.utils.UserGenerator.generateDefaultCreateUserResponse;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+
+import static com.cs.user.system.user.service.application.exception.handler.GlobalExceptionHandler.INTERNAL_SERVER_ERROR_MESSAGE;
+import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.CreateUserPayloadGenerator.*;
+import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.SearchUsersPayload.*;
+import static com.cs.user.system.user.service.application.utils.TestConstants.*;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.Responses.generateSuccessCreateUserResponse;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.Responses.generateSuccessSearchUsersResponse;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.generateValidCreateUserCommand;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.generateValidSearchUsersQuery;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,8 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 @ContextConfiguration(classes = {UserController.class, GlobalExceptionHandler.class})
 class UserControllerTest {
-
-    private final static String BAD_REQUEST = "Bad Request";
 
     @Autowired
     private MockMvc mvc;
@@ -39,9 +47,9 @@ class UserControllerTest {
 
         @Test
         void successfulScenario() throws Exception {
-            var command = generateDefaultCreateUserCommand();
-            var response = generateDefaultCreateUserResponse();
-            var bodyMap = createDefaultBodyMap();
+            var command = generateValidCreateUserCommand();
+            var response = generateSuccessCreateUserResponse();
+            var bodyMap = generateCreateUserValidBodyMap();
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
             given(service.saveUser(command)).willReturn(response);
 
@@ -62,7 +70,7 @@ class UserControllerTest {
 
         @Test
         void givenRequestPayloadWithoutFirstName_thenReturnBadRequestResponse() throws Exception {
-            var bodyMap = createBodyMapWithoutFirstName();
+            var bodyMap = generateCreateUserBodyMapWithoutFirstName();
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
 
             mvc.perform(post("/users")
@@ -70,15 +78,13 @@ class UserControllerTest {
                             .content(jsonBody))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.code").value(BAD_REQUEST))
-                    .andExpect(jsonPath("$.violations[0].fieldName").value("firstName"))
-                    .andExpect(jsonPath("$.violations[0].message").value("First name is mandatory"));
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The firstName field has the error: First name is mandatory!"));
         }
 
         @Test
         void givenRequestPayloadWithoutLastName_thenReturnBadRequestResponse() throws Exception {
-            var emptyLastName = " ";
-            var bodyMap = createBodyMapWithInvalidLastName(emptyLastName);
+            var bodyMap = generateCreateUserBodyMapWithoutLastName();
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
 
             mvc.perform(post("/users")
@@ -86,14 +92,13 @@ class UserControllerTest {
                             .content(jsonBody))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.code").value(BAD_REQUEST))
-                    .andExpect(jsonPath("$.violations[0].fieldName").value("lastName"))
-                    .andExpect(jsonPath("$.violations[0].message").value("Last name is mandatory"));
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The lastName field has the error: Last name is mandatory!"));
         }
 
         @Test
         void givenRequestPayloadWithoutEmail_thenReturnBadRequestResponse() throws Exception {
-            var bodyMap = createBodyMapWithInvalidEmail();
+            var bodyMap = generateCreateUserBodyMapWithoutEmail();
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
 
             mvc.perform(post("/users")
@@ -101,9 +106,137 @@ class UserControllerTest {
                             .content(jsonBody))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.code").value(BAD_REQUEST))
-                    .andExpect(jsonPath("$.violations[0].fieldName").value("email"))
-                    .andExpect(jsonPath("$.violations[0].message").value("Email is mandatory"));
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The email field has the error: Email is mandatory!"));
+        }
+
+        @Test
+        void givenRequestPayloadWithInvalidEmail_thenReturnBadRequestResponse() throws Exception {
+            var invalidEmail = "test.mail.com";
+            var bodyMap = generateCreateUserBodyMapWithInvalidEmail(invalidEmail);
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The email field has the error: Email is not correct!"));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutBirthDate_thenReturnBadRequestResponse() throws Exception {
+            var bodyMap = generateCreateUserBodyMapWithoutBirthDate();
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The birthDate field has the error: Birth date is mandatory!"));
+        }
+
+        @Test
+        void givenRequestPayloadWithInvalidBirthDate_thenReturnBadRequestResponse() throws Exception {
+            var invalidBirthDate = LocalDate.now().plus(1, ChronoUnit.DAYS);
+            var bodyMap = generateCreateUserBodyMapWithInvalidBirthDate(invalidBirthDate);
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The birthDate field has the error: Birth must be earlier than current date!"));
+        }
+
+        @Test
+        void givenThrownGeneralException_thenReturnInternalServerErrorResponse() throws Exception {
+            var command = generateValidCreateUserCommand();
+            var bodyMap = generateCreateUserValidBodyMap();
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+            given(service.saveUser(command)).willThrow(new ArrayIndexOutOfBoundsException());
+
+            mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.code").value(INTERNAL_SERVER_ERROR_CODE))
+                    .andExpect(jsonPath("$.message").value(INTERNAL_SERVER_ERROR_MESSAGE));
+        }
+    }
+
+    @Nested
+    class SearchUsersTests {
+
+        @Test
+        void successfulScenario() throws Exception {
+            var command = generateValidSearchUsersQuery();
+            var response = generateSuccessSearchUsersResponse();
+            var user = response.users().get(0);
+            var bodyMap = generateValidSearchUsersBodyMap();
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+            given(service.findAll(command)).willReturn(response);
+
+            mvc.perform(get("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.users[0].id").value(user.getId().toString()))
+                    .andExpect(jsonPath("$.users[0].firstName").value(user.getFirstName()))
+                    .andExpect(jsonPath("$.users[0].lastName").value(user.getLastName()))
+                    .andExpect(jsonPath("$.users[0].email").value(user.getEmail()))
+                    .andExpect(jsonPath("$.users[0].birthDate").value(user.getBirthDate().toString()))
+                    .andExpect(jsonPath("$.users[0].address").value(user.getAddress()))
+                    .andExpect(jsonPath("$.users[0].phoneNumber").value(user.getPhoneNumber()));
+        }
+
+        @Test
+        void givenRequestPayloadWithIncorrectTimeRange_thenReturnBadRequestResponse() throws Exception {
+            var bodyMap = generateInvalidSearchUsersBodyMap();
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(get("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("'From' must be less than 'To'"));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutFromValue_thenReturnBadRequestResponse() throws Exception {
+            var bodyMap = Map.of("to", TO);
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(get("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The from field has the error: From is mandatory!"));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutToValue_thenReturnBadRequestResponse() throws Exception {
+            var bodyMap = Map.of("from", FROM);
+            var jsonBody = objectMapper.writeValueAsString(bodyMap);
+
+            mvc.perform(get("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message").value("The to field has the error: To is mandatory!"));
         }
     }
 }

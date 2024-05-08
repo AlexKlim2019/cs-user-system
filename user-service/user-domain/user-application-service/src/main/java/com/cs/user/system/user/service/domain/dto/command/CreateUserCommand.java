@@ -2,8 +2,9 @@ package com.cs.user.system.user.service.domain.dto.command;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Builder;
-import lombok.NonNull;
 
 import java.time.LocalDate;
 
@@ -18,7 +19,8 @@ public record CreateUserCommand(
         @NotBlank(message = "Email is mandatory")
         @Email(regexp = EMAIL_REGEX, message = "Email is not correct")
         String email,
-        @NonNull
+        @Past(message = "Birth must be earlier than current date")
+        @NotNull(message = "Birth date is mandatory")
         LocalDate birthDate,
         String address,
         String phoneNumber

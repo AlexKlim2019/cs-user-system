@@ -1,93 +1,60 @@
 package com.cs.user.system.user.service.application.utils;
 
 import com.cs.user.system.user.service.domain.dto.command.CreateUserCommand;
+import com.cs.user.system.user.service.domain.dto.query.SearchUsersQuery;
 import com.cs.user.system.user.service.domain.dto.response.CreateUserResponse;
+import com.cs.user.system.user.service.domain.dto.response.SearchUsersResponse;
 import com.cs.user.system.user.service.domain.entity.User;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
+import static com.cs.user.system.user.service.application.utils.TestConstants.*;
+
 public class UserGenerator {
-    private static final String DEFAULT_FIRST_NAME = "Test first name";
-    private static final String DEFAULT_LAST_NAME = "Test last name";
-    private static final String DEFAULT_EMAIL = "test@mail.com";
-    private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(2000, Month.APRIL, 25);
-    private static final String DEFAULT_ADDRESS = "Test address";
-    private static final String DEFAULT_PHONE_NUMBER = "Test phone number";
-    private static final String DEFAULT_RESPONSE_MESSAGE = "Test response message";
-
-
-    public static CreateUserCommand generateDefaultCreateUserCommand() {
-        return CreateUserCommand.builder()
-                .firstName(DEFAULT_FIRST_NAME)
-                .lastName(DEFAULT_LAST_NAME)
-                .email(DEFAULT_EMAIL)
-                .birthDate(DEFAULT_BIRTH_DATE)
-                .address(DEFAULT_ADDRESS)
-                .phoneNumber(DEFAULT_PHONE_NUMBER)
-                .build();
-    }
-
-    public static CreateUserResponse generateDefaultCreateUserResponse() {
-        var user = User.builder()
+    public static User generateValidUser() {
+        return User.builder()
                 .id(UUID.randomUUID())
-                .firstName(DEFAULT_FIRST_NAME)
-                .lastName(DEFAULT_LAST_NAME)
-                .email(DEFAULT_EMAIL)
-                .birthDate(DEFAULT_BIRTH_DATE)
-                .address(DEFAULT_ADDRESS)
-                .phoneNumber(DEFAULT_PHONE_NUMBER)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .email(VALID_EMAIL)
+                .birthDate(BIRTH_DATE)
+                .address(ADDRESS)
+                .phoneNumber(PHONE_NUMBER)
                 .build();
-        return CreateUserResponse.builder()
-                .user(user)
-                .message(DEFAULT_RESPONSE_MESSAGE)
+    }
+
+    public static CreateUserCommand generateValidCreateUserCommand() {
+        return CreateUserCommand.builder()
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .email(VALID_EMAIL)
+                .birthDate(BIRTH_DATE)
+                .address(ADDRESS)
+                .phoneNumber(PHONE_NUMBER)
+                .build();
+    }
+
+    public static SearchUsersQuery generateValidSearchUsersQuery() {
+        return SearchUsersQuery.builder()
+                .from(FROM)
+                .to(TO)
                 .build();
     }
 
 
-    public static class BodyMapGenerator {
-        public static Map<String, Object> createDefaultBodyMap() {
-            return Map.of(
-                    "firstName", DEFAULT_FIRST_NAME,
-                    "lastName", DEFAULT_LAST_NAME,
-                    "email", DEFAULT_EMAIL,
-                    "birthDate", DEFAULT_BIRTH_DATE,
-                    "address", DEFAULT_ADDRESS,
-                    "phoneNumber", DEFAULT_PHONE_NUMBER
-            );
+    public static class Responses {
+        public static CreateUserResponse generateSuccessCreateUserResponse() {
+            return CreateUserResponse.builder()
+                    .user(generateValidUser())
+                    .message(RESPONSE_MESSAGE)
+                    .build();
         }
 
-        public static Map<String, Object> createBodyMapWithoutFirstName() {
-            return Map.of(
-                    "lastName", DEFAULT_LAST_NAME,
-                    "email", DEFAULT_EMAIL,
-                    "birthDate", DEFAULT_BIRTH_DATE,
-                    "address", DEFAULT_ADDRESS,
-                    "phoneNumber", DEFAULT_PHONE_NUMBER
-            );
-        }
-
-        public static Map<String, Object> createBodyMapWithInvalidLastName(String lastName) {
-            return Map.of(
-                    "firstName", DEFAULT_FIRST_NAME,
-                    "lastName", lastName,
-                    "email", DEFAULT_EMAIL,
-                    "birthDate", DEFAULT_BIRTH_DATE,
-                    "address", DEFAULT_ADDRESS,
-                    "phoneNumber", DEFAULT_PHONE_NUMBER
-            );
-        }
-
-        public static Map<String, Object> createBodyMapWithInvalidEmail() {
-            return Map.of(
-                    "firstName", DEFAULT_FIRST_NAME,
-                    "lastName", DEFAULT_LAST_NAME,
-                    "birthDate", DEFAULT_BIRTH_DATE,
-                    "address", DEFAULT_ADDRESS,
-                    "phoneNumber", DEFAULT_PHONE_NUMBER
-            );
+        public static SearchUsersResponse generateSuccessSearchUsersResponse() {
+            return SearchUsersResponse.builder()
+                    .users(List.of(generateValidUser()))
+                    .build();
         }
     }
 }

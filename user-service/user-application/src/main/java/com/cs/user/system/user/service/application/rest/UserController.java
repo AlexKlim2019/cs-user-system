@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<SearchUsersResponse> searchUsers(@RequestBody SearchUsersQuery query) {
+    public ResponseEntity<SearchUsersResponse> searchUsers(@Valid @RequestBody SearchUsersQuery query) {
         log.info("Users with birth date from {} to {} is being searched...", query.from(), query.to());
         var response = userApplicationService.findAll(query);
         log.info("{} users have been found", response.users().size());

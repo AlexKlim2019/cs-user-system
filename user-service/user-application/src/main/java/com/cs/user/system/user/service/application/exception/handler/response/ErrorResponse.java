@@ -2,8 +2,11 @@ package com.cs.user.system.user.service.application.exception.handler.response;
 
 
 import lombok.Builder;
+import lombok.Getter;
 
-// TODO make it parent error response
+@Getter
 @Builder
-public record ErrorResponse(String code, String message) {
+public class ErrorResponse {
+    private String code;
+    private String message;
 }
