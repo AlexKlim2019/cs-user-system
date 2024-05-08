@@ -12,8 +12,8 @@
     <modules>
         <module>domain</module>
         <module>representation</module>
-        <module>user-container</module>
-        <module>user-dataaccess</module>
+        <module>container</module>
+        <module>dao</module>
         <module>common</module>
     </modules>
 
