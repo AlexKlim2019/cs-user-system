@@ -30,6 +30,7 @@ public class TestConstants {
     public static final String UPDATED_ADDRESS = "Updated address";
     public static final String UPDATED_PHONE_NUMBER = "Updated phone number";
     public static final String UPDATE_USER_RESPONSE_MESSAGE = "Update user response message";
+    public static final String PARTIAL_UPDATE_USER_RESPONSE_MESSAGE = "Partial update user response message";
 
     public static final ZonedDateTime FROM = ZonedDateTime.of(LocalDateTime.of(2000, Month.AUGUST, 4, 0, 0), ZoneId.of(UTC));
     public static final ZonedDateTime TO = ZonedDateTime.of(LocalDateTime.of(2010, Month.AUGUST, 4, 0, 0), ZoneId.of(UTC));

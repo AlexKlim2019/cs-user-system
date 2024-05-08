@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PatchMapping
-    public ResponseEntity<PatchUserResponse> partialUpdateUser(@RequestBody PatchUserCommand command) {
+    public ResponseEntity<PatchUserResponse> partialUpdateUser(@Valid @RequestBody PatchUserCommand command) {
         log.info("User with id {} is being patched...", command.id());
         var response = userApplicationService.partialUpdateUser(command);
         log.info("User with id {} has been updated partially", response.user().getId());

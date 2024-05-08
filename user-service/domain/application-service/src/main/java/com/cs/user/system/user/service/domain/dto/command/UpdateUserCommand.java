@@ -22,8 +22,8 @@ public record UpdateUserCommand(
         @NotBlank(message = "Email is mandatory!")
         @Email(regexp = EMAIL_REGEX, message = "Email is not correct!")
         String email,
-        @Past(message = "Birth date must be earlier than current date!")
         @NotNull(message = "Birth date is mandatory!")
+        @Past(message = "Birth date must be earlier than current date!")
         LocalDate birthDate,
         String address,
         String phoneNumber

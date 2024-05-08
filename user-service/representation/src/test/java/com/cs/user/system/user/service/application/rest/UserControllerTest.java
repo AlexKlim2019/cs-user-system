@@ -12,18 +12,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import static com.cs.user.system.user.service.application.exception.handler.GlobalExceptionHandler.INTERNAL_SERVER_ERROR_MESSAGE;
 import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.CreateUserPayloadGenerator.*;
-import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.SearchUsersPayload.*;
+import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.SearchUsersPayload.generateInvalidSearchUsersBodyMap;
+import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.SearchUsersPayload.generateValidSearchUsersBodyMap;
 import static com.cs.user.system.user.service.application.utils.BodyMapGenerator.UpdateUserPayloadGenerator.*;
 import static com.cs.user.system.user.service.application.utils.TestConstants.*;
-import static com.cs.user.system.user.service.application.utils.UserGenerator.*;
-import static com.cs.user.system.user.service.application.utils.UserGenerator.CommandGenerator.generateValidCreateUserCommand;
-import static com.cs.user.system.user.service.application.utils.UserGenerator.CommandGenerator.generateValidUpdateUserCommand;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.CommandGenerator.*;
 import static com.cs.user.system.user.service.application.utils.UserGenerator.Responses.*;
+import static com.cs.user.system.user.service.application.utils.UserGenerator.generateValidSearchUsersQuery;
+import static java.time.LocalDate.now;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,7 +42,7 @@ class UserControllerTest {
     @MockBean
     private UserApplicationService service;
 
-    private final LocalDate invalidBirthDate = LocalDate.now().plus(1, ChronoUnit.DAYS);
+    private final LocalDate invalidBirthDate = now().plusDays(1);
 
     @Nested
     class CreateUserTests {
@@ -374,6 +374,80 @@ class UserControllerTest {
             var jsonBody = objectMapper.writeValueAsString(bodyMap);
 
             mvc.perform(post("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message")
+                            .value("The birthDate field has the error: Birth date must be earlier than current date!"));
+        }
+    }
+
+    @Nested
+    class PartialUpdateUserTests {
+
+        @Test
+        void successfulScenario() throws Exception {
+            var validBodyMap = Map.of("id", USER_ID.toString(), "firstName", UPDATED_FIRST_NAME);
+            var jsonBody = objectMapper.writeValueAsString(validBodyMap);
+            var command = generateValidPatchUserCommand();
+            var response = generateSuccessPatchUserResponse();
+            var patchedUser = response.user();
+            given(service.partialUpdateUser(command)).willReturn(response);
+
+            mvc.perform(patch("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.user.id").value(patchedUser.getId().toString()))
+                    .andExpect(jsonPath("$.user.firstName").value(patchedUser.getFirstName()))
+                    .andExpect(jsonPath("$.user.lastName").value(patchedUser.getLastName()))
+                    .andExpect(jsonPath("$.user.email").value(patchedUser.getEmail()))
+                    .andExpect(jsonPath("$.user.birthDate").value(patchedUser.getBirthDate().toString()))
+                    .andExpect(jsonPath("$.user.address").value(patchedUser.getAddress()))
+                    .andExpect(jsonPath("$.user.phoneNumber").value(patchedUser.getPhoneNumber()))
+                    .andExpect(jsonPath("$.message").value(response.message()));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutId_thenReturnBadRequestResponse() throws Exception {
+            var bodyMapWithoutId = Map.of("firstName", UPDATED_FIRST_NAME);
+            var jsonBody = objectMapper.writeValueAsString(bodyMapWithoutId);
+
+            mvc.perform(patch("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message")
+                            .value("The id field has the error: Id is mandatory!"));
+        }
+
+        @Test
+        void givenRequestPayloadWithInvalidEmail_thenReturnBadRequestResponse() throws Exception {
+            var invalidEmail = "test.mail.com";
+            var invalidBodyMap = Map.of("id", USER_ID, "email", invalidEmail);
+            var jsonBody = objectMapper.writeValueAsString(invalidBodyMap);
+
+            mvc.perform(patch("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message")
+                            .value("The email field has the error: Email is not correct!"));
+        }
+
+        @Test
+        void givenRequestPayloadWithInvalidBirthDate_thenReturnBadRequestResponse() throws Exception {
+            var invalidBodyMap = Map.of("id", USER_ID, "birthDate", invalidBirthDate);
+            var jsonBody = objectMapper.writeValueAsString(invalidBodyMap);
+
+            mvc.perform(patch("/users")
                             .contentType(APPLICATION_JSON)
                             .content(jsonBody))
                     .andDo(print())
