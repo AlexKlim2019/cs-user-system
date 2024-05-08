@@ -1,7 +1,6 @@
 package com.cs.user.system.user.service.application.utils;
 
 import com.cs.user.system.user.service.domain.dto.command.CreateUserCommand;
-import com.cs.user.system.user.service.domain.dto.command.PatchUserCommand;
 import com.cs.user.system.user.service.domain.dto.command.UpdateUserCommand;
 import com.cs.user.system.user.service.domain.dto.query.SearchUsersQuery;
 import com.cs.user.system.user.service.domain.dto.response.CreateUserResponse;
@@ -69,13 +68,6 @@ public class UserGenerator {
                     .phoneNumber(UPDATED_PHONE_NUMBER)
                     .build();
         }
-
-        public static PatchUserCommand generateValidPatchUserCommand() {
-            return PatchUserCommand.builder()
-                    .id(USER_ID)
-                    .firstName(UPDATED_FIRST_NAME)
-                    .build();
-        }
     }
 
 
@@ -83,7 +75,7 @@ public class UserGenerator {
         public static CreateUserResponse generateSuccessCreateUserResponse() {
             return CreateUserResponse.builder()
                     .user(generateValidUser())
-                    .message(CREATE_USER_RESPONSE_MESSAGE)
+                    .message("Create user response message")
                     .build();
         }
 
@@ -96,7 +88,7 @@ public class UserGenerator {
         public static UpdateUserResponse generateSuccessUpdateUserResponse() {
             return UpdateUserResponse.builder()
                     .user(generateValidUpdatedUser())
-                    .message(UPDATE_USER_RESPONSE_MESSAGE)
+                    .message("Update user response message")
                     .build();
         }
 
@@ -105,7 +97,7 @@ public class UserGenerator {
             partialUpdatedUser.setFirstName(UPDATED_FIRST_NAME);
             return PatchUserResponse.builder()
                     .user(partialUpdatedUser)
-                    .message(PARTIAL_UPDATE_USER_RESPONSE_MESSAGE)
+                    .message("Partial update user response message")
                     .build();
         }
     }

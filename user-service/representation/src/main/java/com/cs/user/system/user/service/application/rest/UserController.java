@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<DeleteUserResponse> deleteUser(@RequestBody DeleteUserCommand command) {
+    public ResponseEntity<DeleteUserResponse> deleteUser(@Valid @RequestBody DeleteUserCommand command) {
         log.info("User with id {} is being deleted...", command.id());
         var response = userApplicationService.deleteUser(command);
         log.info("User with id {} has been deleted successfully", command.id());

@@ -1,6 +1,9 @@
 package com.cs.user.system.user.service.application.rest;
 
 import com.cs.user.system.user.service.application.exception.handler.GlobalExceptionHandler;
+import com.cs.user.system.user.service.domain.dto.command.DeleteUserCommand;
+import com.cs.user.system.user.service.domain.dto.command.PatchUserCommand;
+import com.cs.user.system.user.service.domain.dto.response.DeleteUserResponse;
 import com.cs.user.system.user.service.domain.port.input.service.UserApplicationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Nested;
@@ -173,7 +176,7 @@ class UserControllerTest {
                             .content(jsonBody))
                     .andDo(print())
                     .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.code").value(INTERNAL_SERVER_ERROR_CODE))
+                    .andExpect(jsonPath("$.code").value("Internal Server Error"))
                     .andExpect(jsonPath("$.message").value(INTERNAL_SERVER_ERROR_MESSAGE));
         }
     }
@@ -391,7 +394,10 @@ class UserControllerTest {
         void successfulScenario() throws Exception {
             var validBodyMap = Map.of("id", USER_ID.toString(), "firstName", UPDATED_FIRST_NAME);
             var jsonBody = objectMapper.writeValueAsString(validBodyMap);
-            var command = generateValidPatchUserCommand();
+            var command = PatchUserCommand.builder()
+                    .id(USER_ID)
+                    .firstName(UPDATED_FIRST_NAME)
+                    .build();
             var response = generateSuccessPatchUserResponse();
             var patchedUser = response.user();
             given(service.partialUpdateUser(command)).willReturn(response);
@@ -455,6 +461,41 @@ class UserControllerTest {
                     .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
                     .andExpect(jsonPath("$.message")
                             .value("The birthDate field has the error: Birth date must be earlier than current date!"));
+        }
+    }
+
+    @Nested
+    class DeleteUserTests {
+
+        @Test
+        void successfulScenario() throws Exception {
+            var validBodyMap = Map.of("id", USER_ID.toString());
+            var jsonBody = objectMapper.writeValueAsString(validBodyMap);
+            var command = new DeleteUserCommand(USER_ID);
+            var response = new DeleteUserResponse("Delete user response message");
+            given(service.deleteUser(command)).willReturn(response);
+
+            mvc.perform(delete("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value(response.message()));
+        }
+
+        @Test
+        void givenRequestPayloadWithoutId_thenReturnBadRequestResponse() throws Exception {
+            var bodyMapWithoutId = Map.of();
+            var jsonBody = objectMapper.writeValueAsString(bodyMapWithoutId);
+
+            mvc.perform(delete("/users")
+                            .contentType(APPLICATION_JSON)
+                            .content(jsonBody))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
+                    .andExpect(jsonPath("$.message")
+                            .value("The id field has the error: Id is mandatory!"));
         }
     }
 }
