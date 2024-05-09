@@ -7,6 +7,7 @@ import com.cs.user.system.user.service.domain.port.output.repository.UserReposit
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.cs.user.system.utils.StringUtils.concatenate;
 
@@ -17,6 +18,7 @@ public class DeleteUserCommandHandler {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public DeleteUserResponse handle(DeleteUserCommand command) {
         userRepository.findById(command.id())
                 .orElseThrow(() -> new UserNotFoundException("User with not found with given id!"));

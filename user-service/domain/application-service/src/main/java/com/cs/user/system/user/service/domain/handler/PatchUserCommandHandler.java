@@ -10,6 +10,7 @@ import com.cs.user.system.user.service.domain.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -19,6 +20,7 @@ public class PatchUserCommandHandler {
     private final UserRepository userRepository;
     private final UserDomainService userDomainService;
 
+    @Transactional
     public PatchUserResponse handle(PatchUserCommand command) {
         var user = userRepository.findById(command.id())
                 .orElseThrow(() -> new UserNotFoundException("User not found with given id!"));

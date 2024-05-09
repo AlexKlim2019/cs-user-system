@@ -1,8 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-DROP TABLE IF EXISTS public.users CASCADE;
-
-CREATE TABLE public.users
+CREATE TABLE IF NOT EXISTS public.users
 (
     id uuid NOT NULL,
     first_name TEXT NOT NULL,
