@@ -16,7 +16,7 @@ public interface UserRepository {
 
     Optional<User> findById(UUID id);
 
-    Optional<List<User>> findAllByBirthDateRange(LocalDate from, LocalDate to); // TODO delete Optional
+    List<User> findAllByBirthDateRange(LocalDate from, LocalDate to);
 
     void deleteById(UUID id);
 }

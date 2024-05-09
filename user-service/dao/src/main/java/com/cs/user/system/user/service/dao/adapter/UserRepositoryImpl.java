@@ -41,11 +41,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<List<User>> findAllByBirthDateRange(LocalDate from, LocalDate to) {
-        var users = repository.findAllByBirthDateBetween(from, to).stream()
+    public List<User> findAllByBirthDateRange(LocalDate from, LocalDate to) {
+        return repository.findAllByBirthDateBetween(from, to).stream()
                 .map(mapper::userEntityToUser)
                 .toList();
-        return Optional.of(users);
     }
 
     @Override

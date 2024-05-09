@@ -16,8 +16,10 @@ public class SearchUsersQueryHandler {
     private final UserRepository userRepository;
 
     public SearchUsersResponse handle(SearchUsersQuery query) {
-        var users = userRepository.findAllByBirthDateRange(query.from(), query.to())
-                .orElseThrow(()-> new UserNotFoundException("Users with the birth date range not found"));
+        var users = userRepository.findAllByBirthDateRange(query.from(), query.to());
+        if (users.isEmpty()) {
+            throw new UserNotFoundException("Users with the birth date range not found");
+        }
         return new SearchUsersResponse(users);
     }
 }
