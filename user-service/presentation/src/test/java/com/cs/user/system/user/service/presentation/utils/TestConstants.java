@@ -1,9 +1,8 @@
 package com.cs.user.system.user.service.presentation.utils;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.UUID;
-
-import static com.cs.user.system.constants.DomainConstants.UTC;
 
 public class TestConstants {
 
@@ -26,6 +25,6 @@ public class TestConstants {
     public static final LocalDate UPDATED_BIRTH_DATE = LocalDate.of(2000, Month.APRIL, 25);
     public static final String UPDATED_ADDRESS = "Updated address";
     public static final String UPDATED_PHONE_NUMBER = "Updated phone number";
-    public static final ZonedDateTime FROM = ZonedDateTime.of(LocalDateTime.of(2000, Month.AUGUST, 4, 0, 0), ZoneId.of(UTC));
-    public static final ZonedDateTime TO = ZonedDateTime.of(LocalDateTime.of(2010, Month.AUGUST, 4, 0, 0), ZoneId.of(UTC));
+    public static final LocalDate FROM = LocalDate.of(2000, Month.AUGUST, 4);
+    public static final LocalDate TO = LocalDate.of(2010, Month.AUGUST, 4);
 }

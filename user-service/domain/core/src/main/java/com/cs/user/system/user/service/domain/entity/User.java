@@ -3,11 +3,8 @@ package com.cs.user.system.user.service.domain.entity;
 import com.cs.user.system.user.service.domain.exception.UserDomainException;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import static com.cs.user.system.constants.DomainConstants.UTC;
 import static com.cs.user.system.utils.StringUtils.concatenate;
 
 public class User extends BaseEntity {
@@ -56,7 +53,7 @@ public class User extends BaseEntity {
     }
 
     private void validateBirthDate(int minimumRegistrationAge) {
-        int userAge = ZonedDateTime.now(ZoneId.of(UTC)).getYear() - (this.birthDate.getYear());
+        int userAge = LocalDate.now().getYear() - (this.birthDate.getYear());
         if (userAge < minimumRegistrationAge) {
             var message = concatenate("User should be more than", String.valueOf(minimumRegistrationAge), "years old");
             throw new UserDomainException(message);

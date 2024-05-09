@@ -2,14 +2,14 @@ package com.cs.user.system.user.service.domain.event;
 
 import com.cs.user.system.user.service.domain.entity.User;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public abstract class UserEvent {
     private final User user;
 
-    private final ZonedDateTime createdAt;
+    private final LocalDateTime createdAt;
 
-    public UserEvent(User user, ZonedDateTime createdAt) {
+    public UserEvent(User user, LocalDateTime createdAt) {
         this.user = user;
         this.createdAt = createdAt;
     }
@@ -18,7 +18,7 @@ public abstract class UserEvent {
         return user;
     }
 
-    public ZonedDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }

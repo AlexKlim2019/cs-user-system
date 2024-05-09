@@ -2,20 +2,21 @@ package com.cs.user.system.user.service.domain.port.output.repository;
 
 import com.cs.user.system.user.service.domain.entity.User;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository {
 
-    Optional<User> save(User user, ZonedDateTime createdAt);
+    User save(User user, LocalDateTime createdAt);
 
-    void update(User user, ZonedDateTime updatedAt);
+    void update(User user, LocalDateTime updatedAt);
 
     Optional<User> findById(UUID id);
 
-    Optional<List<User>> findAllByBirthDateRange(ZonedDateTime from, ZonedDateTime to);
+    Optional<List<User>> findAllByBirthDateRange(LocalDate from, LocalDate to); // TODO delete Optional
 
     void deleteById(UUID id);
 }

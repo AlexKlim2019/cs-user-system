@@ -6,10 +6,7 @@ import com.cs.user.system.user.service.domain.event.ValidateUserEvent;
 import com.cs.user.system.user.service.domain.service.UserDomainService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-import static com.cs.user.system.constants.DomainConstants.UTC;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class UserDomainServiceImpl implements UserDomainService {
@@ -25,13 +22,13 @@ public class UserDomainServiceImpl implements UserDomainService {
         validateUser(user);
         user.initializeUser();
         log.info("User with id: {} is initiated", user.getId());
-        return new CreateUserEvent(user, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new CreateUserEvent(user, LocalDateTime.now());
     }
 
     @Override
     public ValidateUserEvent validateUser(User user) {
         user.validateUser(minimumRegistrationAge);
         log.info("User with id: {} is validated successful", user.getId());
-        return new ValidateUserEvent(user, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new ValidateUserEvent(user, LocalDateTime.now());
     }
 }

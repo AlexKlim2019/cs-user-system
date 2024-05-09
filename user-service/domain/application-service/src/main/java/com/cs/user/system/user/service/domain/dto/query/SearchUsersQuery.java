@@ -4,13 +4,14 @@ import com.cs.user.system.user.service.domain.dto.query.validator.DateTimeRangeC
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @DateTimeRangeConstraint
 public record SearchUsersQuery(
         @NotNull(message = "From is mandatory!")
-        ZonedDateTime from,
+        LocalDate from,
         @NotNull(message = "To is mandatory!")
-        ZonedDateTime to) {
+        LocalDate to) {
 }
